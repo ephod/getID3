@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace GetID3;
+namespace GetId3;
 
 use PHPUnit\Framework\TestCase;
 
@@ -58,9 +58,16 @@ class GetId3Test extends TestCase
 
     }
 
+    /**
+     * @throws \GetID3\Exception\GetId3Exception
+     */
     public function testVersion()
     {
+        $getId3 = new GetId3();
 
+        $expected = '1.9.15-20180215180';
+        $actual = $getId3->version();
+        $this->assertEquals($expected, $actual);
     }
 
     public function test__construct()
