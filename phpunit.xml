@@ -6,6 +6,11 @@
          verbose="true">
     <php>
         <ini name="error_reporting" value="-1" />
+        <const name="GETID3_TEMP_DIR" value="/tmp" />
+        <const name="ENT_SUBSTITUTE" value="8" />
+        <const name="IMG_JPG" value="2" />
+        <const name="GETID3_INCLUDEPATH" value="/var/www/html/src/" />
+        <const name="GETID3_OS_ISWINDOWS" value="false" />
     </php>
 
     <testsuites>
