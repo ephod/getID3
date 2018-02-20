@@ -95,6 +95,7 @@ class DbmCache extends GetId3
      * @param string $lock_filename
      *
      * @throws \GetID3\Exception\GetId3Exception
+     * @throws \Exception
      */
     public function __construct(
       string $cache_type,
