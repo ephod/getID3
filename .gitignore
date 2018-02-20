@@ -1,6 +1,5 @@
-helperapps/*.exe
-helperapps/*.dll
-
+config/helperapps/*.exe
+config/helperapps/*.dll
 
 #################
 ## Eclipse
