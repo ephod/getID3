@@ -198,15 +198,6 @@ class GetId3
      */
     public function __construct()
     {
-
-        // Check for PHP version
-        $required_php_version = '5.3.0';
-        if (version_compare(PHP_VERSION, $required_php_version, '<')) {
-            $this->startup_error .= 'getID3() requires PHP v'.$required_php_version.' or higher - you are running v'.PHP_VERSION."\n";
-
-            return;
-        }
-
         // Check memory
         $this->memory_limit = ini_get('memory_limit');
         if (preg_match('#([0-9]+) ?M#i', $this->memory_limit, $matches)) {
@@ -223,11 +214,6 @@ class GetId3
             $this->startup_error .= 'PHP has less than 4MB available memory and will very likely run out. Increase memory_limit in php.ini'."\n";
         } elseif ($this->memory_limit <= 12582912) {
             $this->startup_warning .= 'PHP has less than 12MB available memory and might run out if all modules are loaded. Increase memory_limit in php.ini'."\n";
-        }
-
-        // Check safe_mode off
-        if (preg_match('#(1|ON)#i', ini_get('safe_mode'))) {
-            $this->warning('WARNING: Safe mode is on, shorten support disabled, md5data/sha1data for ogg vorbis disabled, ogg vorbos/flac tag writing disabled.');
         }
 
         if (($mbstring_func_overload = ini_get('mbstring.func_overload')) && ($mbstring_func_overload & 0x02)) {
@@ -249,11 +235,6 @@ class GetId3
             if (get_magic_quotes_gpc()) {
                 $this->startup_error .= 'magic_quotes_gpc must be disabled before running getID3(). Surround getid3 block by set_magic_quotes_gpc(0) and set_magic_quotes_gpc(1).'."\n";
             }
-        }
-
-        // Load support library
-        if (!include_once(GETID3_INCLUDEPATH.'getid3.lib.php')) {
-            $this->startup_error .= 'getid3.lib.php is missing or corrupt'."\n";
         }
 
         if ($this->option_max_2gb_check === null) {
