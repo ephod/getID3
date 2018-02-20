@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace GetId3\Handler;
 
 use Exception;
-use GetID3\Exception\GetId3Exception;
+use GetId3\Exception\GetId3Exception;
 use GetId3\GetId3;
 use GetId3\Library\GetId3Library;
 
@@ -133,7 +133,7 @@ abstract class GetId3Handler
      * @param int $bytes
      *
      * @return string|false
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     protected function fread(int $bytes)
     {
@@ -175,7 +175,7 @@ abstract class GetId3Handler
      * @param int $whence
      *
      * @return int
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     protected function fseek(int $bytes, ?int $whence = SEEK_SET): int
     {
@@ -271,7 +271,7 @@ abstract class GetId3Handler
      *
      * @return string|null
      * @throws Exception
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function saveAttachment(
       string $name,

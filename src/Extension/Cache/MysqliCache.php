@@ -96,7 +96,7 @@ class MysqliCache extends GetId3
      * @param string $table
      *
      * @throws Exception
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function __construct(
       string $host,
@@ -163,7 +163,7 @@ class MysqliCache extends GetId3
      * @param null|string $original_filename
      *
      * @return array
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function analyze(
       string $filename,

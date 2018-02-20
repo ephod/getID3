@@ -94,7 +94,7 @@ class DbmCache extends GetId3
      * @param string $dbm_filename
      * @param string $lock_filename
      *
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      * @throws \Exception
      */
     public function __construct(
@@ -213,7 +213,7 @@ class DbmCache extends GetId3
      * @param null|string $original_filename
      *
      * @return array
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function analyze(
       string $filename,

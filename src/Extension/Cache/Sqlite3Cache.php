@@ -108,7 +108,7 @@ class Sqlite3Cache extends GetId3
      * @param null|string $table Holds name of sqlite table.
      * @param bool|null $hide
      *
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function __construct(
       ?string $table = 'getid3_cache',
@@ -171,7 +171,7 @@ class Sqlite3Cache extends GetId3
      * @param null|string $original_filename
      *
      * @return array
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function analyze(
       string $filename,

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace GetID3\Exception;
+namespace GetId3\Exception;
 
 use Exception;
 
 /**
  * Class GetId3Exception
  *
- * @package GetID3\Exception
+ * @package GetId3\Exception
  */
 class GetId3Exception extends Exception
 {

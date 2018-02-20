@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace GetId3;
 
-use GetID3\Exception\GetId3Exception;
+use function file_exists;
+use GetId3\Exception\GetId3Exception;
 
 /**
  * Class GetId3
@@ -333,7 +334,7 @@ class GetId3
      * @param int $filesize
      *
      * @return bool
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function openfile(string $filename, ?int $filesize = null): bool
     {
@@ -1821,7 +1822,7 @@ class GetId3
      * @param string $name
      *
      * @return bool
-     * @throws \GetID3\Exception\GetId3Exception
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public function include_module(string $name): bool
     {
@@ -1838,17 +1839,23 @@ class GetId3
      * @param string $filename
      *
      * @return bool
+     *
+     * @throws \GetId3\Exception\GetId3Exception
      */
     public static function is_writable(string $filename): bool
     {
-        $ret = is_writable($filename);
-
-        if (!$ret) {
-            $perms = fileperms($filename);
-            $ret = ($perms & 0x0080) || ($perms & 0x0010) || ($perms & 0x0002);
+        if (!file_exists($filename)) {
+            throw new GetId3Exception("{$filename} doesn't exist.");
         }
 
-        return $ret;
+        $isWritable = is_writable($filename);
+
+        if (!$isWritable) {
+            $perms = fileperms($filename);
+            $isWritable = ($perms & 0x0080) || ($perms & 0x0010) || ($perms & 0x0002);
+        }
+
+        return $isWritable;
     }
 
 }
