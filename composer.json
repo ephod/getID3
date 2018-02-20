@@ -44,12 +44,12 @@
       "getid3/"
     ],
     "psr-4": {
-      "GetID3\\": "src/"
+      "GetId3\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "GetID3\\": "tests/"
+      "GetId3\\": "tests/"
     }
   },
   "config": {
