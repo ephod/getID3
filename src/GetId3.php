@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace GetId3;
 
+use GetID3\Exception\GetId3Exception;
+
 /**
  * Class GetId3
  *
@@ -191,6 +193,9 @@ class GetId3
 
     const ATTACHMENTS_INLINE = true;
 
+    /**
+     * GetId3 constructor.
+     */
     public function __construct()
     {
 
@@ -302,14 +307,14 @@ class GetId3
 
         if (!empty($this->startup_error)) {
             echo $this->startup_error;
-            throw new getid3_exception($this->startup_error);
+            throw new GetId3Exception($this->startup_error);
         }
     }
 
     /**
      * @return string
      */
-    public function version()
+    public function version(): string
     {
         return self::VERSION;
     }
@@ -317,7 +322,7 @@ class GetId3
     /**
      * @return int
      */
-    public function fread_buffer_size()
+    public function fread_buffer_size(): int
     {
         return $this->option_fread_buffer_size;
     }
@@ -327,7 +332,7 @@ class GetId3
      *
      * @return bool
      */
-    public function setOption($optArray)
+    public function setOption(array $optArray): bool
     {
         if (!is_array($optArray) || empty($optArray)) {
             return false;
@@ -347,13 +352,13 @@ class GetId3
      * @param int $filesize
      *
      * @return bool
-     * @throws getid3_exception
+     * @throws \GetID3\Exception\GetId3Exception
      */
-    public function openfile($filename, $filesize = null)
+    public function openfile(string $filename, ?int $filesize = null): bool
     {
         try {
             if (!empty($this->startup_error)) {
-                throw new getid3_exception($this->startup_error);
+                throw new GetId3Exception($this->startup_error);
             }
             if (!empty($this->startup_warning)) {
                 foreach (
@@ -371,7 +376,7 @@ class GetId3
 
             // remote files not supported
             if (preg_match('#^(ht|f)tp://#', $filename)) {
-                throw new getid3_exception('Remote files are not supported - please copy the file locally first');
+                throw new GetId3Exception('Remote files are not supported - please copy the file locally first');
             }
 
             $filename = str_replace('/', DIRECTORY_SEPARATOR, $filename);
@@ -396,7 +401,7 @@ class GetId3
                 if (empty($errormessagelist)) {
                     $errormessagelist[] = 'fopen failed';
                 }
-                throw new getid3_exception('Could not open "'.$filename.'" ('.implode('; ',
+                throw new GetId3Exception('Could not open "'.$filename.'" ('.implode('; ',
                     $errormessagelist).')');
             }
 
@@ -435,11 +440,11 @@ class GetId3
                     if ($real_filesize === false) {
                         unset($this->info['filesize']);
                         fclose($this->fp);
-                        throw new getid3_exception('Unable to determine actual filesize. File is most likely larger than '.round(PHP_INT_MAX / 1073741824).'GB and is not supported by PHP.');
+                        throw new GetId3Exception('Unable to determine actual filesize. File is most likely larger than '.round(PHP_INT_MAX / 1073741824).'GB and is not supported by PHP.');
                     } elseif (getid3_lib::intValueSupported($real_filesize)) {
                         unset($this->info['filesize']);
                         fclose($this->fp);
-                        throw new getid3_exception('PHP seems to think the file is larger than '.round(PHP_INT_MAX / 1073741824).'GB, but filesystem reports it as '.number_format($real_filesize / 1073741824,
+                        throw new GetId3Exception('PHP seems to think the file is larger than '.round(PHP_INT_MAX / 1073741824).'GB, but filesystem reports it as '.number_format($real_filesize / 1073741824,
                             3).'GB, please report to info@getid3.org');
                     }
                     $this->info['filesize'] = $real_filesize;
@@ -467,10 +472,10 @@ class GetId3
      * @return array
      */
     public function analyze(
-      $filename,
-      $filesize = null,
-      $original_filename = ''
-    ) {
+      string $filename,
+      ?int $filesize = null,
+      ?string $original_filename = ''
+    ): array {
         try {
             if (!$this->openfile($filename, $filesize)) {
                 return $this->info;
@@ -492,7 +497,7 @@ class GetId3
                         $tag_class = 'getid3_'.$tag_name;
                         $tag = new $tag_class($this);
                         $tag->Analyze();
-                    } catch (getid3_exception $e) {
+                    } catch (GetId3Exception $e) {
                         throw $e;
                     }
                 }
@@ -654,7 +659,7 @@ class GetId3
      *
      * @return array
      */
-    public function error($message)
+    public function error(string $message): array
     {
         $this->CleanUp();
         if (!isset($this->info['error'])) {
@@ -673,7 +678,7 @@ class GetId3
      *
      * @return bool
      */
-    public function warning($message)
+    public function warning(string $message): bool
     {
         $this->info['warning'][] = $message;
 
@@ -684,7 +689,7 @@ class GetId3
     /**
      * @return bool
      */
-    private function CleanUp()
+    private function CleanUp(): bool
     {
 
         // remove possible empty keys
@@ -742,7 +747,7 @@ class GetId3
      *
      * @return array
      */
-    public function GetFileFormatArray()
+    public function GetFileFormatArray(): array
     {
         static $format_info = [];
         if (empty($format_info)) {
@@ -1306,7 +1311,7 @@ class GetId3
      *
      * @return mixed|false
      */
-    public function GetFileFormat(&$filedata, $filename = '')
+    public function GetFileFormat(string &$filedata, ?string $filename = '')
     {
         // this function will determine the format of a file based on usually
         // the first 2-4 bytes of the file (8 bytes for PNG, 16 bytes for JPG,
@@ -1356,7 +1361,7 @@ class GetId3
      * @param array $array
      * @param string $encoding
      */
-    public function CharConvert(&$array, $encoding)
+    public function CharConvert(array &$array, string $encoding): void
     {
 
         // identical encoding - end here
@@ -1381,7 +1386,7 @@ class GetId3
     /**
      * @return bool
      */
-    public function HandleAllTags()
+    public function HandleAllTags(): bool
     {
 
         // key name => array (tag name, character encoding)
@@ -1514,7 +1519,7 @@ class GetId3
      *
      * @return array|bool
      */
-    public function getHashdata($algorithm)
+    public function getHashdata(string $algorithm)
     {
         switch ($algorithm) {
             case 'md5':
@@ -1640,7 +1645,7 @@ class GetId3
         return true;
     }
 
-    public function ChannelsBitratePlaytimeCalculations()
+    public function ChannelsBitratePlaytimeCalculations(): void
     {
 
         // set channelmode on audio
@@ -1708,7 +1713,7 @@ class GetId3
     /**
      * @return bool
      */
-    public function CalculateCompressionRatioVideo()
+    public function CalculateCompressionRatioVideo(): bool
     {
         if (empty($this->info['video'])) {
             return false;
@@ -1760,7 +1765,7 @@ class GetId3
     /**
      * @return bool
      */
-    public function CalculateCompressionRatioAudio()
+    public function CalculateCompressionRatioAudio(): bool
     {
         if (empty($this->info['audio']['bitrate']) || empty($this->info['audio']['channels']) || empty($this->info['audio']['sample_rate']) || !is_numeric($this->info['audio']['sample_rate'])) {
             return false;
@@ -1781,7 +1786,7 @@ class GetId3
     /**
      * @return bool
      */
-    public function CalculateReplayGain()
+    public function CalculateReplayGain(): bool
     {
         if (isset($this->info['replay_gain'])) {
             if (!isset($this->info['replay_gain']['reference_volume'])) {
@@ -1835,13 +1840,13 @@ class GetId3
      * @param string $name
      *
      * @return bool
-     * @throws getid3_exception
+     * @throws \GetID3\Exception\GetId3Exception
      */
-    public function include_module($name)
+    public function include_module(string $name): bool
     {
         //if (!file_exists($this->include_path.'module.'.$name.'.php')) {
         if (!file_exists(GETID3_INCLUDEPATH.'module.'.$name.'.php')) {
-            throw new getid3_exception('Required module.'.$name.'.php is missing.');
+            throw new GetId3Exception('Required module.'.$name.'.php is missing.');
         }
         include_once(GETID3_INCLUDEPATH.'module.'.$name.'.php');
 
@@ -1853,7 +1858,7 @@ class GetId3
      *
      * @return bool
      */
-    public static function is_writable($filename)
+    public static function is_writable(string $filename): bool
     {
         $ret = is_writable($filename);
 
@@ -1866,4 +1871,3 @@ class GetId3
     }
 
 }
-

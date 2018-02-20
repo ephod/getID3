@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace GetId3\Handler;
 
+use Exception;
+use GetID3\Exception\GetId3Exception;
+use GetId3\GetId3;
+use GetId3\Library\GetId3Library;
+
 /**
  * Class GetId3Handler
  *
@@ -14,7 +19,7 @@ abstract class GetId3Handler
     /**
      * @var getID3
      */
-    protected $getid3;                       // pointer
+    protected $getId3;                       // pointer
 
     /**
      * Analyzing filepointer or string.
@@ -50,14 +55,14 @@ abstract class GetId3Handler
     private $dependency_to;
 
     /**
-     * getid3_handler constructor.
+     * GetId3Handler constructor.
      *
-     * @param getID3 $getid3
-     * @param string $call_module
+     * @param \GetId3\GetId3 $getid3
+     * @param null|string $call_module
      */
-    public function __construct(getID3 $getid3, $call_module = null)
+    public function __construct(GetId3 $getid3, ?string $call_module = null)
     {
-        $this->getid3 = $getid3;
+        $this->getId3 = $getid3;
 
         if ($call_module) {
             $this->dependency_to = str_replace('getid3_', '', $call_module);
@@ -69,34 +74,34 @@ abstract class GetId3Handler
      *
      * @return bool
      */
-    abstract public function Analyze();
+    abstract public function Analyze(): bool;
 
     /**
      * Analyze from string instead.
      *
      * @param string $string
      */
-    public function AnalyzeString($string)
+    public function AnalyzeString(string $string): void
     {
         // Enter string mode
         $this->setStringMode($string);
 
         // Save info
-        $saved_avdataoffset = $this->getid3->info['avdataoffset'];
-        $saved_avdataend = $this->getid3->info['avdataend'];
-        $saved_filesize = (isset($this->getid3->info['filesize']) ? $this->getid3->info['filesize'] : null); // may be not set if called as dependency without openfile() call
+        $saved_avdataoffset = $this->getId3->info['avdataoffset'];
+        $saved_avdataend = $this->getId3->info['avdataend'];
+        $saved_filesize = (isset($this->getId3->info['filesize']) ? $this->getId3->info['filesize'] : null); // may be not set if called as dependency without openfile() call
 
         // Reset some info
-        $this->getid3->info['avdataoffset'] = 0;
-        $this->getid3->info['avdataend'] = $this->getid3->info['filesize'] = $this->data_string_length;
+        $this->getId3->info['avdataoffset'] = 0;
+        $this->getId3->info['avdataend'] = $this->getId3->info['filesize'] = $this->data_string_length;
 
         // Analyze
         $this->Analyze();
 
         // Restore some info
-        $this->getid3->info['avdataoffset'] = $saved_avdataoffset;
-        $this->getid3->info['avdataend'] = $saved_avdataend;
-        $this->getid3->info['filesize'] = $saved_filesize;
+        $this->getId3->info['avdataoffset'] = $saved_avdataoffset;
+        $this->getId3->info['avdataend'] = $saved_avdataend;
+        $this->getId3->info['filesize'] = $saved_filesize;
 
         // Exit string mode
         $this->data_string_flag = false;
@@ -105,7 +110,7 @@ abstract class GetId3Handler
     /**
      * @param string $string
      */
-    public function setStringMode($string)
+    public function setStringMode(string $string): void
     {
         $this->data_string_flag = true;
         $this->data_string = $string;
@@ -121,16 +126,16 @@ abstract class GetId3Handler
             return $this->data_string_position;
         }
 
-        return ftell($this->getid3->fp);
+        return ftell($this->getId3->fp);
     }
 
     /**
      * @param int $bytes
      *
      * @return string|false
-     * @throws getid3_exception
+     * @throws \GetID3\Exception\GetId3Exception
      */
-    protected function fread($bytes)
+    protected function fread(int $bytes)
     {
         if ($this->data_string_flag) {
             $this->data_string_position += $bytes;
@@ -139,9 +144,11 @@ abstract class GetId3Handler
               $this->data_string_position - $bytes, $bytes);
         }
         $pos = $this->ftell() + $bytes;
-        if (!getid3_lib::intValueSupported($pos)) {
-            throw new getid3_exception('cannot fread('.$bytes.' from '.$this->ftell().') because beyond PHP filesystem limit',
-              10);
+        if (!GetId3Library::intValueSupported($pos)) {
+            throw new GetId3Exception(
+              'cannot fread('.$bytes.' from '.$this->ftell().') because beyond PHP filesystem limit',
+              10
+            );
         }
 
         //return fread($this->getid3->fp, $bytes);
@@ -154,7 +161,7 @@ abstract class GetId3Handler
         */
         $contents = '';
         do {
-            $part = fread($this->getid3->fp, $bytes);
+            $part = fread($this->getId3->fp, $bytes);
             $partLength = strlen($part);
             $bytes -= $partLength;
             $contents .= $part;
@@ -168,9 +175,9 @@ abstract class GetId3Handler
      * @param int $whence
      *
      * @return int
-     * @throws getid3_exception
+     * @throws \GetID3\Exception\GetId3Exception
      */
-    protected function fseek($bytes, $whence = SEEK_SET)
+    protected function fseek(int $bytes, ?int $whence = SEEK_SET): int
     {
         if ($this->data_string_flag) {
             switch ($whence) {
@@ -193,27 +200,27 @@ abstract class GetId3Handler
             if ($whence == SEEK_CUR) {
                 $pos = $this->ftell() + $bytes;
             } elseif ($whence == SEEK_END) {
-                $pos = $this->getid3->info['filesize'] + $bytes;
+                $pos = $this->getId3->info['filesize'] + $bytes;
             }
-            if (!getid3_lib::intValueSupported($pos)) {
-                throw new getid3_exception('cannot fseek('.$pos.') because beyond PHP filesystem limit',
+            if (!GetId3Library::intValueSupported($pos)) {
+                throw new GetId3Exception('cannot fseek('.$pos.') because beyond PHP filesystem limit',
                   10);
             }
         }
 
-        return fseek($this->getid3->fp, $bytes, $whence);
+        return fseek($this->getId3->fp, $bytes, $whence);
     }
 
     /**
      * @return bool
      */
-    protected function feof()
+    protected function feof(): bool
     {
         if ($this->data_string_flag) {
             return $this->data_string_position >= $this->data_string_length;
         }
 
-        return feof($this->getid3->fp);
+        return feof($this->getId3->fp);
     }
 
     /**
@@ -221,7 +228,7 @@ abstract class GetId3Handler
      *
      * @return bool
      */
-    final protected function isDependencyFor($module)
+    final protected function isDependencyFor(string $module): bool
     {
         return $this->dependency_to == $module;
     }
@@ -231,9 +238,9 @@ abstract class GetId3Handler
      *
      * @return bool
      */
-    protected function error($text)
+    protected function error(string $text): bool
     {
-        $this->getid3->info['error'][] = $text;
+        $this->getId3->info['error'][] = $text;
 
         return false;
     }
@@ -243,9 +250,9 @@ abstract class GetId3Handler
      *
      * @return bool
      */
-    protected function warning($text)
+    protected function warning(string $text): bool
     {
-        return $this->getid3->warning($text);
+        return $this->getId3->warning($text);
     }
 
     /**
@@ -264,19 +271,23 @@ abstract class GetId3Handler
      *
      * @return string|null
      * @throws Exception
-     * @throws getid3_exception
+     * @throws \GetID3\Exception\GetId3Exception
      */
-    public function saveAttachment($name, $offset, $length, $image_mime = null)
-    {
+    public function saveAttachment(
+      string $name,
+      int $offset,
+      int $length,
+      ?string $image_mime = null
+    ) {
         try {
 
             // do not extract at all
-            if ($this->getid3->option_save_attachments === getID3::ATTACHMENTS_NONE) {
+            if ($this->getId3->option_save_attachments === getID3::ATTACHMENTS_NONE) {
 
                 $attachment = null; // do not set any
 
                 // extract to return array
-            } elseif ($this->getid3->option_save_attachments === getID3::ATTACHMENTS_INLINE) {
+            } elseif ($this->getId3->option_save_attachments === getID3::ATTACHMENTS_INLINE) {
 
                 $this->fseek($offset);
                 $attachment = $this->fread($length); // get whole data in one pass, till it is anyway stored in memory
@@ -289,11 +300,11 @@ abstract class GetId3Handler
 
                 // set up destination path
                 $dir = rtrim(str_replace(['/', '\\'], DIRECTORY_SEPARATOR,
-                  $this->getid3->option_save_attachments), DIRECTORY_SEPARATOR);
+                  $this->getId3->option_save_attachments), DIRECTORY_SEPARATOR);
                 if (!is_dir($dir) || !getID3::is_writable($dir)) { // check supplied directory
                     throw new Exception('supplied path ('.$dir.') does not exist, or is not writable');
                 }
-                $dest = $dir.DIRECTORY_SEPARATOR.$name.($image_mime ? '.'.getid3_lib::ImageExtFromMime($image_mime) : '');
+                $dest = $dir.DIRECTORY_SEPARATOR.$name.($image_mime ? '.'.GetId3Library::ImageExtFromMime($image_mime) : '');
 
                 // create dest file
                 if (($fp_dest = fopen($dest, 'wb')) == false) {
@@ -302,7 +313,7 @@ abstract class GetId3Handler
 
                 // copy data
                 $this->fseek($offset);
-                $buffersize = ($this->data_string_flag ? $length : $this->getid3->fread_buffer_size());
+                $buffersize = ($this->data_string_flag ? $length : $this->getId3->fread_buffer_size());
                 $bytesleft = $length;
                 while ($bytesleft > 0) {
                     if (($buffer = $this->fread(min($buffersize,
@@ -342,4 +353,3 @@ abstract class GetId3Handler
     }
 
 }
-
