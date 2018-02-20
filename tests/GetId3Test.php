@@ -65,7 +65,7 @@ class GetId3Test extends TestCase
     {
         $getId3 = new GetId3();
 
-        $expected = '1.9.15-20180215180';
+        $expected = '1.9.15-201802151809';
         $actual = $getId3->version();
         $this->assertEquals($expected, $actual);
     }
