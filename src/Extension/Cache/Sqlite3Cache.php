@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+namespace GetId3\Extension\Cache;
 
 /////////////////////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>                               //
@@ -17,6 +20,7 @@
 // MySQL extension was reworked for SQLite3 by Karl G. Holz <newaeonØmac*com>  //
 //                                                                            ///
 /////////////////////////////////////////////////////////////////////////////////
+use GetId3\GetId3;
 
 /**
 * This is a caching extension for getID3(). It works the exact same
@@ -91,7 +95,13 @@
 *
 *
 */
-class getID3_cached_sqlite3 extends getID3
+
+/**
+ * Class Sqlite3Cache
+ *
+ * @package GetId3\Extension\Cache
+ */
+class Sqlite3Cache extends GetId3
 {
 	/**
 	 * hold the sqlite db

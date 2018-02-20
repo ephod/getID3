@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+namespace GetId3\Extension\Cache;
 
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
@@ -71,7 +74,14 @@
 *   Frequent updates                    mysqli
 */
 
-class getID3_cached_mysqli extends getID3
+use GetId3\GetId3;
+
+/**
+ * Class MysqliCache
+ *
+ * @package GetId3\Extension\Cache
+ */
+class MysqliCache extends GetId3
 {
 	/**
 	 * @var mysqli

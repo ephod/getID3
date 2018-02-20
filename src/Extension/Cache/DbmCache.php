@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+namespace GetId3\Extension\Cache;
 
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
@@ -15,6 +18,7 @@
 // This extension written by Allan Hansen <ahØartemis*dk>      //
 //                                                            ///
 /////////////////////////////////////////////////////////////////
+use GetId3\GetId3;
 
 
 /**
@@ -70,8 +74,12 @@
 *   Frequent updates                    mysql
 */
 
-
-class getID3_cached_dbm extends getID3
+/**
+ * Class DbmCache
+ *
+ * @package GetId3\Extension\Cache
+ */
+class DbmCache extends GetId3
 {
 	/**
 	 * @var resource
