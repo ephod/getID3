@@ -102,6 +102,16 @@ class GetId3Test extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @throws \GetId3\Exception\GetId3Exception
+     */
+    public function testIs_writableNotWritable()
+    {
+        $expected = false;
+        $actual = GetId3::is_writable(__DIR__.'/../config/non_writable.txt');
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testHandleAllTags()
     {
 
@@ -132,8 +142,16 @@ class GetId3Test extends TestCase
 
     }
 
+    /**
+     * @throws \GetId3\Exception\GetId3Exception
+     */
     public function testGetid3_tempnam()
     {
+        $getId3 = new GetId3();
 
+        $prefix = '/tmp/';
+        $filename = $getId3->getid3_tempnam();
+        $this->assertStringStartsWith($prefix, $filename);
+        $this->assertFileExists($filename);
     }
 }
