@@ -1811,9 +1811,9 @@ class GetId3
     }
 
     /**
-     * @return string|bool
+     * @return string
      */
-    public function getid3_tempnam()
+    public function getid3_tempnam(): string
     {
         return tempnam($this->tempdir, 'gI3');
     }
@@ -1826,11 +1826,10 @@ class GetId3
      */
     public function include_module(string $name): bool
     {
-        //if (!file_exists($this->include_path.'module.'.$name.'.php')) {
         if (!file_exists(GETID3_INCLUDEPATH.'module.'.$name.'.php')) {
             throw new GetId3Exception('Required module.'.$name.'.php is missing.');
         }
-        include_once(GETID3_INCLUDEPATH.'module.'.$name.'.php');
+        include_once GETID3_INCLUDEPATH.'module.'.$name.'.php';
 
         return true;
     }
@@ -1839,7 +1838,6 @@ class GetId3
      * @param string $filename
      *
      * @return bool
-     *
      * @throws \GetId3\Exception\GetId3Exception
      */
     public static function is_writable(string $filename): bool
