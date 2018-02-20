@@ -80,9 +80,26 @@ class GetId3Test extends TestCase
 
     }
 
+    /**
+     * @throws \GetId3\Exception\GetId3Exception
+     */
     public function testIs_writable()
     {
+        $expected = true;
+        $actual = GetId3::is_writable(__DIR__.'/../.travis.yml');
+        $this->assertEquals($expected, $actual);
+    }
 
+    /**
+     * @throws \GetId3\Exception\GetId3Exception
+     *
+     * @expectedException \GetId3\Exception\GetId3Exception
+     */
+    public function testIs_writableNoFile()
+    {
+        $expected = true;
+        $actual = GetId3::is_writable(__DIR__.'/../.travis.yml.');
+        $this->assertEquals($expected, $actual);
     }
 
     public function testHandleAllTags()
