@@ -173,3 +173,6 @@ demos/php_error.log
 /composer.lock
 /composer.local.json
 /composer.phar
+
+# PHPStorm
+/.idea/
