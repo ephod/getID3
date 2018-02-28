@@ -1,3 +1,6 @@
+# Experimental
+This package is a work in progress. Do not use within a production environment.
+
 getID3() by James Heinrich (<info@getid3.org>)
 ===
 **Available at <http://getid3.sourceforge.net> or <http://www.getid3.org>**
