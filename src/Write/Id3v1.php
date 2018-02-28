@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+namespace GetId3\Write;
 
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
@@ -15,9 +18,7 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.tag.id3v1.php', __FILE__, true);
-
-class getid3_write_id3v1
+class Id3v1
 {
 	/**
 	 * @var string

@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+namespace GetId3\Write;
 
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
@@ -16,7 +19,7 @@
 /////////////////////////////////////////////////////////////////
 
 
-class getid3_write_metaflac
+class Metaflac
 {
 	/**
 	 * @var string

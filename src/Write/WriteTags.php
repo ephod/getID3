@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+namespace GetId3\Write;
 
 /////////////////////////////////////////////////////////////////
 /// getID3() by James Heinrich <info@getid3.org>               //
@@ -21,13 +24,6 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-if (!defined('GETID3_INCLUDEPATH')) {
-	throw new Exception('getid3.php MUST be included before calling getid3_writetags');
-}
-if (!include_once(GETID3_INCLUDEPATH.'getid3.lib.php')) {
-	throw new Exception('write.php depends on getid3.lib.php, which is missing.');
-}
-
 /**
  * NOTES:
  *
@@ -45,7 +41,7 @@ if (!include_once(GETID3_INCLUDEPATH.'getid3.lib.php')) {
  *
  * @link http://www.personal.uni-jena.de/~pfk/mpp/sv8/apekey.html
  */
-class getid3_writetags
+class WriteTags
 {
 	/**
 	 * Absolute filename of file to write tags to.
